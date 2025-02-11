@@ -1,36 +1,60 @@
 <!DOCTYPE html>
 <html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
-  <title>走るよ！のりまき！</title>
-  <style>
-    model-viewer {
-      width: 100%;
-      height: 80vh;
-    }
-  </style>
-</head>
-<!-- ... existing code ... -->
-<body>
-  <!-- Model Viewer -->
-  <model-viewer id="arViewer" src="run.glb" ar ar-modes="webxr scene-viewer quick-look" camera-controls auto-rotate></model-viewer>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- model-viewerコンポーネントの読み込み -->
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+    <title>走るよ！のりまき！</title>
+    <style>
+      /* モデル表示領域のサイズ指定 */
+      model-viewer {
+        width: 100%;
+        height: 80vh;
+      }
+      /* モデル選択ボタンの配置 */
+      #modelButtons {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Model Viewer：初期は「走る」モデル -->
+    <model-viewer 
+      id="arViewer"
+      src="run.glb" 
+      ios-src="run.usdz"
+      ar 
+      ar-modes="webxr scene-viewer quick-look" 
+      camera-controls 
+      auto-rotate 
+      autoplay 
+      camera-orbit="0deg 75deg 2.5m"
+      shadow-intensity="1"
+      field-of-view="30deg"
+      environment-image="pillars_1k.hdr"
+      skybox-image="pillars_1k.hdr"
+      poster="poster.webp">
+    </model-viewer>
 
-  <!-- Buttons to Change Model -->
-  <div id="modelButtons" style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);">
-    <button onclick="changeModel('run.glb')">走る</button>
-    <button onclick="changeModel('run.glb')">守る</button>
-    <button onclick="changeModel('run.glb')">タッチする</button>
-  </div>
-<!-- ... existing code ... -->
+    <!-- モデル選択用ボタン -->
+    <div id="modelButtons">
+      <button onclick="changeModel('run.glb', 'run.usdz')">走る</button>
+      <button onclick="changeModel('nageru.glb', 'nageru.usdz')">守る</button>
+      <button onclick="changeModel('touch1.glb', 'touch1.usdz')">タッチする</button>
+    </div>
 
-  <script>
-    // model-viewer要素内のモデルソースを変更する関数
-    function changeModel(modelUrl) {
-      const viewer = document.getElementById('arViewer');
-      viewer.src = modelUrl;
-    }
-  </script>
-</body>
+    <script>
+      // model-viewer内のモデルソースを変更する関数
+      function changeModel(glbFile, usdzFile) {
+        const viewer = document.getElementById('arViewer');
+        viewer.setAttribute('src', glbFile);
+        viewer.setAttribute('ios-src', usdzFile);
+      }
+    </script>
+  </body>
 </html>
+
