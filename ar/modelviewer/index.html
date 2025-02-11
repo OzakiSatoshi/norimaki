@@ -3,19 +3,58 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- 未来感のあるフォント「Orbitron」を読み込み -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
   <!-- model-viewerコンポーネント -->
   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
-  <title>WebAR Example</title>
+  <title>野球やろうぜ！のりまき！</title>
   <style>
+    /* 全体のフォントと背景カラー */
+    body {
+      font-family: 'Orbitron', sans-serif;
+      background-color: #111;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+    }
+    /* Model Viewerの表示領域 */
     model-viewer {
       width: 100%;
       height: 80vh;
+      background-color: #000;
     }
+    /* ボタンのコンテナ：透明感のある背景と中央配置 */
     #modelButtons {
       position: fixed;
       bottom: 20px;
       left: 50%;
       transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.5);
+      padding: 10px 20px;
+      border-radius: 12px;
+    }
+    /* 各ボタンのサイズやスタイルを大きく・未来的に */
+    #modelButtons button {
+      font-size: 1.2rem;
+      padding: 15px 30px;
+      margin: 0 10px;
+      border: none;
+      border-radius: 8px;
+      background: linear-gradient(45deg, #1e90ff, #00bfff);
+      color: #fff;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    /* ホバー時に拡大し、影を強調 */
+    #modelButtons button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    }
+    /* フォーカス時の視認性向上 */
+    #modelButtons button:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(30, 144, 255, 0.5);
     }
   </style>
 </head>
@@ -36,7 +75,7 @@
     poster="poster.webp">
   </model-viewer>
 
-  <!-- ボタン -->
+  <!-- 各アクション用ボタン -->
   <div id="modelButtons">
     <button onclick="changeModel('run.glb', 'run.usdz', configs.run)">走る</button>
     <button onclick="changeModel('kamae1.glb', 'nageru.usdz', configs.mamoru)">守る</button>
@@ -44,11 +83,11 @@
   </div>
 
   <script>
-    // ここにモデルごとの調整パラメータを入れておく
+    // モデルごとの調整パラメータ
     const configs = {
       run: {
         orbit: '0deg 75deg 2.5m',       // camera-orbitの例
-        target: '0m 0m 0m',            // camera-target（中心位置）の例
+        target: '0m 0m 0m',             // camera-target（中心位置）の例
         fov: '30deg'
       },
       mamoru: {
@@ -63,13 +102,11 @@
       }
     };
 
+    // モデル切替関数：モデルファイルとカメラパラメータを更新
     function changeModel(glbFile, usdzFile, config) {
       const viewer = document.getElementById('arViewer');
-      // モデル切替
       viewer.setAttribute('src', glbFile);
       viewer.setAttribute('ios-src', usdzFile);
-
-      // カメラやFOVをモデルごとに合わせて変更
       viewer.setAttribute('camera-orbit', config.orbit);
       viewer.setAttribute('camera-target', config.target);
       viewer.setAttribute('field-of-view', config.fov);
