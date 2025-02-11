@@ -17,11 +17,19 @@
       margin: 0;
       padding: 0;
     }
+    /* 3Dモデルと背景画像のコンテナ */
+    #modelContainer {
+      position: relative;
+      width: 100%;
+      height: 80vh;
+      background: url('poster.webp') no-repeat center center;
+      background-size: cover;
+    }
     /* Model Viewerの表示領域 */
     model-viewer {
       width: 100%;
-      height: 80vh;
-      background-color: #000;
+      height: 100%;
+      background-color: transparent; /* 背景はコンテナの画像を利用 */
     }
     /* ボタンコンテナ：Flexboxで横並びに調整 */
     #modelButtons {
@@ -74,21 +82,22 @@
   </style>
 </head>
 <body>
-  <!-- Model Viewer -->
-  <model-viewer 
-    id="arViewer"
-    src="run.glb" 
-    ios-src="run.usdz"
-    ar 
-    ar-modes="webxr scene-viewer quick-look" 
-    camera-controls 
-    auto-rotate 
-    autoplay
-    camera-orbit="0deg 75deg 2.5m"
-    field-of-view="30deg"
-    shadow-intensity="1"
-    poster="poster.webp">
-  </model-viewer>
+  <!-- 3Dモデルと背景画像のコンテナ -->
+  <div id="modelContainer">
+    <model-viewer 
+      id="arViewer"
+      src="run.glb" 
+      ios-src="run.usdz"
+      ar 
+      ar-modes="webxr scene-viewer quick-look" 
+      camera-controls 
+      auto-rotate 
+      autoplay
+      camera-orbit="0deg 75deg 2.5m"
+      field-of-view="30deg"
+      shadow-intensity="1">
+    </model-viewer>
+  </div>
 
   <!-- 各アクション用ボタン -->
   <div id="modelButtons">
@@ -101,8 +110,8 @@
     // モデルごとの調整パラメータ
     const configs = {
       run: {
-        orbit: '0deg 75deg 2.5m',       // camera-orbitの例
-        target: '0m 0m 0m',             // camera-target（中心位置）の例
+        orbit: '0deg 75deg 2.5m',
+        target: '0m 0m 0m',
         fov: '30deg'
       },
       mamoru: {
