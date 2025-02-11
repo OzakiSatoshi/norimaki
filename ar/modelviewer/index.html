@@ -1,52 +1,36 @@
 <!DOCTYPE html>
 <html lang="ja">
-  <head>
-    <title>走るよ！のりまき！</title>
-    <meta charset="utf-8">
-    <meta name="description" content="&lt;model-viewer&gt; template">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- model-viewerのサイズ指定 -->
-    <style>
-      model-viewer {
-        width: 100%;
-        height: 80vh;
-      }
-    </style>
-    <link type="text/css" href="styles.css" rel="stylesheet"/>
-    <!-- OPTIONAL: The :focus-visible polyfill removes the focus ring for some input types -->
-    <script src="https://unpkg.com/focus-visible@5.0.2/dist/focus-visible.js" defer></script>
-    <!-- Import the component -->
-    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
-  </head>
-  <body>
-    <!-- <model-viewer> HTML element -->
-    <model-viewer 
-        src="run.glb" 
-        ios-src="run.usdz"
-        ar ar-modes="webxr scene-viewer quick-look" 
-        camera-controls poster="poster.webp" 
-        shadow-intensity="1" 
-        autoplay 
-        camera-orbit="-21.51deg 78.95deg 2.5m" 
-        field-of-view="30deg" 
-        environment-image="pillars_1k.hdr" 
-        skybox-image="pillars_1k.hdr">
-        
-        <button class="Hotspot" slot="hotspot-1" data-position="-13.978083781478503m 107.70141535224306m 27.34120906764527m" data-normal="0.31252954616235185m 0.0352831080256839m 0.9492525401933896m" data-visibility-attribute="visible">
-          <div class="HotspotAnnotation">n0rimaki</div>
-        </button>
-        
-        <div class="progress-bar hide" slot="progress-bar">
-            <div class="update-bar"></div>
-        </div>
-        
-        <button slot="ar-button" id="ar-button">
-            ARで見る
-        </button>
-        
-        <div id="ar-prompt">
-            <img src="ar_hand_prompt.png" alt="AR用プロンプト">
-        </div>
-    </model-viewer>  
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <title>走るよ！のりまき！</title>
+  <style>
+    model-viewer {
+      width: 100%;
+      height: 80vh;
+    }
+  </style>
+</head>
+<!-- ... existing code ... -->
+<body>
+  <!-- Model Viewer -->
+  <model-viewer id="arViewer" src="run.glb" ar ar-modes="webxr scene-viewer quick-look" camera-controls auto-rotate></model-viewer>
+
+  <!-- Buttons to Change Model -->
+  <div id="modelButtons" style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);">
+    <button onclick="changeModel('run.glb')">走る</button>
+    <button onclick="changeModel('run.glb')">守る</button>
+    <button onclick="changeModel('run.glb')">タッチする</button>
+  </div>
+<!-- ... existing code ... -->
+
+  <script>
+    // model-viewer要素内のモデルソースを変更する関数
+    function changeModel(modelUrl) {
+      const viewer = document.getElementById('arViewer');
+      viewer.src = modelUrl;
+    }
+  </script>
+</body>
 </html>
