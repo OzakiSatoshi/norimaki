@@ -107,28 +107,60 @@
   </div>
 
   <script>
-    // モデルごとの調整パラメータ
+    // モデルごとの調整パラメータに「scale」と「rotation」を追加
+    // scale: "X Y Z"（倍率）、rotation: "X Y Z"（度数。内部でラジアンに変換）
     const configs = {
       run: {
         orbit: '0deg 75deg 2.5m',
         target: '0m 0m 0m',
-        fov: '30deg'
+        fov: '30deg',
+        scale: '1 1 1',       // オブジェクトの大きさ（例: そのままのサイズ）
+        rotation: '0 0 0'     // 回転角度（例: 変更なし）
       },
       mamoru: {
         orbit: '0deg 60deg 3m',
         target: '0m 0.5m 0m',
-        fov: '35deg'
+        fov: '35deg',
+        scale: '1 1 1',       // 必要に応じて大きさ調整
+        rotation: '0 45 0'    // Y軸周りに45度回転（例）
       },
       touch: {
         orbit: '0deg 75deg 1.8m',
         target: '0m 0m 0m',
-        fov: '30deg'
+        fov: '30deg',
+        scale: '1 1 1',       // オブジェクトの大きさ調整
+        rotation: '0 90 0'    // Y軸周りに90度回転（例）
       }
     };
 
-    // モデル切替関数：モデルファイルとカメラパラメータを更新
+    // モデル切替関数：モデルファイル、カメラパラメータに加え、scaleとrotationを適用
     function changeModel(glbFile, usdzFile, config) {
       const viewer = document.getElementById('arViewer');
+
+      // モデル読み込み完了後に、scaleとrotationを調整するリスナーを追加
+      const onLoadTransform = function() {
+        if (config.scale) {
+          // 例: "1 1 1" を [1,1,1] に変換して設定
+          const scaleValues = config.scale.split(' ').map(parseFloat);
+          if (viewer.model && viewer.model.scale) {
+            viewer.model.scale.set(scaleValues[0], scaleValues[1], scaleValues[2]);
+          }
+        }
+        if (config.rotation) {
+          // 例: "0 45 0"（度）をラジアンに変換して設定
+          const rotationValues = config.rotation.split(' ').map(parseFloat);
+          const radianValues = rotationValues.map(deg => deg * Math.PI / 180);
+          if (viewer.model && viewer.model.rotation) {
+            viewer.model.rotation.set(radianValues[0], radianValues[1], radianValues[2]);
+          }
+        }
+        // 一度実行したらリスナーを削除
+        viewer.removeEventListener('load', onLoadTransform);
+      };
+
+      viewer.addEventListener('load', onLoadTransform);
+
+      // モデル切替とカメラパラメータ更新
       viewer.setAttribute('src', glbFile);
       viewer.setAttribute('ios-src', usdzFile);
       viewer.setAttribute('camera-orbit', config.orbit);
