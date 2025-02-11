@@ -23,7 +23,7 @@
       height: 80vh;
       background-color: #000;
     }
-    /* ボタンのコンテナ：透明感のある背景と中央配置 */
+    /* ボタンコンテナ：Flexboxで横並びに調整 */
     #modelButtons {
       position: fixed;
       bottom: 20px;
@@ -32,12 +32,16 @@
       background: rgba(0, 0, 0, 0.5);
       padding: 10px 20px;
       border-radius: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: nowrap;
     }
     /* 各ボタンのサイズやスタイルを大きく・未来的に */
     #modelButtons button {
       font-size: 1.2rem;
       padding: 15px 30px;
-      margin: 0 10px;
       border: none;
       border-radius: 8px;
       background: linear-gradient(45deg, #1e90ff, #00bfff);
@@ -46,7 +50,7 @@
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
       transition: transform 0.2s, box-shadow 0.2s;
     }
-    /* ホバー時に拡大し、影を強調 */
+    /* ホバー時のエフェクト */
     #modelButtons button:hover {
       transform: scale(1.05);
       box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
@@ -55,6 +59,17 @@
     #modelButtons button:focus {
       outline: none;
       box-shadow: 0 0 0 3px rgba(30, 144, 255, 0.5);
+    }
+    /* スマートフォンなど小さい画面の場合の調整 */
+    @media (max-width: 480px) {
+      #modelButtons {
+        flex-wrap: wrap;
+        padding: 5px;
+      }
+      #modelButtons button {
+        font-size: 1rem;
+        padding: 10px 15px;
+      }
     }
   </style>
 </head>
