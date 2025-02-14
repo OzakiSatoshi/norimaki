@@ -3,13 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- 未来感のあるフォント「Orbitron」を読み込み -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
-  <!-- model-viewerコンポーネント -->
   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
   <title>野球やろうぜ！のりまき！</title>
   <style>
-    /* 全体のフォントと背景カラー */
     body {
       font-family: 'Orbitron', sans-serif;
       background-color: #111;
@@ -17,7 +14,6 @@
       margin: 0;
       padding: 0;
     }
-    /* 3Dモデルと背景画像のコンテナ */
     #modelContainer {
       position: relative;
       width: 100%;
@@ -25,13 +21,11 @@
       background: url('poster.webp') no-repeat center center;
       background-size: cover;
     }
-    /* Model Viewerの表示領域 */
     model-viewer {
       width: 100%;
       height: 100%;
-      background-color: transparent; /* 背景はコンテナの画像を利用 */
+      background-color: transparent;
     }
-    /* ボタンコンテナ：Flexboxで横並びに調整 */
     #modelButtons {
       position: fixed;
       bottom: 20px;
@@ -46,7 +40,6 @@
       gap: 10px;
       flex-wrap: nowrap;
     }
-    /* 各ボタンのサイズやスタイルを大きく・未来的に */
     #modelButtons button {
       font-size: 1.2rem;
       padding: 15px 30px;
@@ -58,17 +51,10 @@
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
       transition: transform 0.2s, box-shadow 0.2s;
     }
-    /* ホバー時のエフェクト */
     #modelButtons button:hover {
       transform: scale(1.05);
       box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
     }
-    /* フォーカス時の視認性向上 */
-    #modelButtons button:focus {
-      outline: none;
-      box-shadow: 0 0 0 3px rgba(30, 144, 255, 0.5);
-    }
-    /* スマートフォンなど小さい画面の場合の調整 */
     @media (max-width: 480px) {
       #modelButtons {
         flex-wrap: wrap;
@@ -82,7 +68,6 @@
   </style>
 </head>
 <body>
-  <!-- 3Dモデルと背景画像のコンテナ -->
   <div id="modelContainer">
     <model-viewer 
       id="arViewer"
@@ -90,16 +75,17 @@
       ios-src="run.usdz"
       ar 
       ar-modes="webxr scene-viewer quick-look" 
+      ar-placement="floor"  <!-- 追加 -->
       camera-controls 
       auto-rotate 
       autoplay
       camera-orbit="0deg 75deg 2.5m"
       field-of-view="30deg"
-      shadow-intensity="1">
+      shadow-intensity="1"
+      position="0 0 0"> <!-- モデルの高さを明示的に設定 -->
     </model-viewer>
   </div>
 
-  <!-- 各アクション用ボタン -->
   <div id="modelButtons">
     <button onclick="changeModel('run.glb', 'run.usdz', configs.run)">走る</button>
     <button onclick="changeModel('kamae.glb', 'nageru.usdz', configs.mamoru)">守る</button>
@@ -107,60 +93,61 @@
   </div>
 
   <script>
-    // モデルごとの調整パラメータに「scale」と「rotation」を追加
-    // scale: "X Y Z"（倍率）、rotation: "X Y Z"（度数。内部でラジアンに変換）
     const configs = {
       run: {
         orbit: '0deg 75deg 2.5m',
         target: '0m 0m 0m',
         fov: '30deg',
-        scale: '1 1 1',       // オブジェクトの大きさ（例: そのままのサイズ）
-        rotation: '0 0 0'     // 回転角度（例: 変更なし）
+        scale: '1 1 1',
+        rotation: '0 0 0',
+        position: '0 0 0' // 追加
       },
       mamoru: {
         orbit: '0deg 60deg 3m',
         target: '0m 0.5m 0m',
         fov: '35deg',
-        scale: '1 1 1',       // 必要に応じて大きさ調整
-        rotation: '0 45 0'    // Y軸周りに45度回転（例）
+        scale: '1 1 1',
+        rotation: '0 45 0',
+        position: '0 0 0'
       },
       touch: {
         orbit: '0deg 75deg 1.8m',
         target: '0m 0m 0m',
         fov: '30deg',
-        scale: '1 1 1',       // オブジェクトの大きさ調整
-        rotation: '0 90 0'    // Y軸周りに90度回転（例）
+        scale: '1 1 1',
+        rotation: '0 90 0',
+        position: '0 0 0'
       }
     };
 
-    // モデル切替関数：モデルファイル、カメラパラメータに加え、scaleとrotationを適用
     function changeModel(glbFile, usdzFile, config) {
       const viewer = document.getElementById('arViewer');
 
-      // モデル読み込み完了後に、scaleとrotationを調整するリスナーを追加
       const onLoadTransform = function() {
         if (config.scale) {
-          // 例: "1 1 1" を [1,1,1] に変換して設定
           const scaleValues = config.scale.split(' ').map(parseFloat);
           if (viewer.model && viewer.model.scale) {
             viewer.model.scale.set(scaleValues[0], scaleValues[1], scaleValues[2]);
           }
         }
         if (config.rotation) {
-          // 例: "0 45 0"（度）をラジアンに変換して設定
           const rotationValues = config.rotation.split(' ').map(parseFloat);
           const radianValues = rotationValues.map(deg => deg * Math.PI / 180);
           if (viewer.model && viewer.model.rotation) {
             viewer.model.rotation.set(radianValues[0], radianValues[1], radianValues[2]);
           }
         }
-        // 一度実行したらリスナーを削除
+        if (config.position) {
+          const positionValues = config.position.split(' ').map(parseFloat);
+          if (viewer.model && viewer.model.position) {
+            viewer.model.position.set(positionValues[0], positionValues[1], positionValues[2]);
+          }
+        }
         viewer.removeEventListener('load', onLoadTransform);
       };
 
       viewer.addEventListener('load', onLoadTransform);
 
-      // モデル切替とカメラパラメータ更新
       viewer.setAttribute('src', glbFile);
       viewer.setAttribute('ios-src', usdzFile);
       viewer.setAttribute('camera-orbit', config.orbit);
