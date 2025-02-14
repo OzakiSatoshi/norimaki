@@ -75,14 +75,14 @@
       ios-src="run.usdz"
       ar 
       ar-modes="webxr scene-viewer quick-look" 
-      ar-placement="floor"  <!-- 追加 -->
+      ar-placement="floor"
       camera-controls 
       auto-rotate 
       autoplay
+      animation-name="*"
       camera-orbit="0deg 75deg 2.5m"
       field-of-view="30deg"
-      shadow-intensity="1"
-      position="0 0 0"> <!-- モデルの高さを明示的に設定 -->
+      shadow-intensity="1">
     </model-viewer>
   </div>
 
@@ -100,7 +100,7 @@
         fov: '30deg',
         scale: '1 1 1',
         rotation: '0 0 0',
-        position: '0 0 0' // 追加
+        animation: '*'
       },
       mamoru: {
         orbit: '0deg 60deg 3m',
@@ -108,7 +108,7 @@
         fov: '35deg',
         scale: '1 1 1',
         rotation: '0 45 0',
-        position: '0 0 0'
+        animation: '*'
       },
       touch: {
         orbit: '0deg 75deg 1.8m',
@@ -116,7 +116,7 @@
         fov: '30deg',
         scale: '1 1 1',
         rotation: '0 90 0',
-        position: '0 0 0'
+        animation: '*'
       }
     };
 
@@ -137,12 +137,13 @@
             viewer.model.rotation.set(radianValues[0], radianValues[1], radianValues[2]);
           }
         }
-        if (config.position) {
-          const positionValues = config.position.split(' ').map(parseFloat);
-          if (viewer.model && viewer.model.position) {
-            viewer.model.position.set(positionValues[0], positionValues[1], positionValues[2]);
-          }
+
+        // アニメーションを強制的に再生
+        if (config.animation) {
+          viewer.setAttribute('animation-name', config.animation);
         }
+        
+        viewer.play();  // 明示的にアニメーション再開
         viewer.removeEventListener('load', onLoadTransform);
       };
 
@@ -153,6 +154,7 @@
       viewer.setAttribute('camera-orbit', config.orbit);
       viewer.setAttribute('camera-target', config.target);
       viewer.setAttribute('field-of-view', config.fov);
+      viewer.setAttribute('animation-name', config.animation); // アニメーション適用
     }
   </script>
 </body>
