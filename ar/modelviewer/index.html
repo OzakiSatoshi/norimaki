@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
-  <title>野球やろうぜ！のりまき！1</title>
+  <title>野球やろうぜ！のりまき！2</title>
   <style>
     body {
       font-family: 'Orbitron', sans-serif;
@@ -100,25 +100,29 @@
         fov: '30deg',
         scale: '1 1 1',
         rotation: '0 0 0',
+        position: '0 0 0',  // 位置を追加
         animation: '*'
       },
       mamoru: {
         orbit: '0deg 60deg 3m',
-        target: '0m -1m 0m',
+        target: '0m 0m 0m',
         fov: '35deg',
         scale: '1 1 1',
         rotation: '0 45 0',
+        position: '0 -1.5 0',  // ここでY座標を下げる
         animation: '*'
       },
       touch: {
         orbit: '0deg 75deg 1.8m',
-        target: '0m -1m 0m',
+        target: '0m 0m 0m',
         fov: '30deg',
         scale: '1 1 1',
         rotation: '0 90 0',
+        position: '0 -1.0 0',  // ここでY座標を下げる
         animation: '*'
       }
     };
+
 
     function changeModel(glbFile, usdzFile, config) {
       const viewer = document.getElementById('arViewer');
