@@ -3,10 +3,17 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Google FontsからOrbitronフォントを読み込む -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
+  
+  <!-- model-viewerライブラリを読み込む（3Dモデル表示用） -->
   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
-  <title>野球やろうぜ！のりまき！11</title>
+  
+  <title>野球やろうぜ！のりまき！12</title>
+  
   <style>
+    /* ページ全体のスタイル設定 */
     body {
       font-family: 'Orbitron', sans-serif;
       background-color: #111;
@@ -14,18 +21,24 @@
       margin: 0;
       padding: 0;
     }
+
+    /* 3Dモデル表示エリアのスタイル設定 */
     #modelContainer {
       position: relative;
       width: 100%;
-      height: 80vh;
+      height: 80vh; /* ビューポートの80%の高さに設定 */
       background: url('poster.webp') no-repeat center center;
       background-size: cover;
     }
+    
+    /* model-viewer要素の設定（背景透過） */
     model-viewer {
       width: 100%;
       height: 100%;
       background-color: transparent;
     }
+    
+    /* ボタンコンテナ（モデル切り替えボタン用） */
     #modelButtons {
       position: fixed;
       bottom: 20px;
@@ -40,6 +53,8 @@
       gap: 10px;
       flex-wrap: nowrap;
     }
+    
+    /* ボタンのデザイン設定 */
     #modelButtons button {
       font-size: 1.2rem;
       padding: 15px 30px;
@@ -51,10 +66,14 @@
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
       transition: transform 0.2s, box-shadow 0.2s;
     }
+    
+    /* ホバー時のボタンアニメーション */
     #modelButtons button:hover {
       transform: scale(1.05);
       box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
     }
+    
+    /* スマホ向けのレスポンシブ対応 */
     @media (max-width: 480px) {
       #modelButtons {
         flex-wrap: wrap;
@@ -68,6 +87,7 @@
   </style>
 </head>
 <body>
+  <!-- 3Dモデルの表示エリア -->
   <div id="modelContainer">
     <model-viewer 
       id="arViewer"
@@ -86,6 +106,7 @@
     </model-viewer>
   </div>
 
+  <!-- モデル切り替えボタン -->
   <div id="modelButtons">
     <button onclick="changeModel('run.glb', 'run.usdz', configs.run)">走る</button>
     <button onclick="changeModel('kamae.glb', 'nageru.usdz', configs.mamoru)">守る</button>
@@ -93,6 +114,7 @@
   </div>
 
   <script>
+    /* 各モデルの設定 */
     const configs = {
       run: {
         orbit: '0deg 75deg 2.5m',
@@ -100,7 +122,7 @@
         fov: '30deg',
         scale: '1 1 1',
         rotation: '0 0 0',
-        position: '0 0 0',  // 位置を追加
+        position: '0 0 0',
         animation: '*'
       },
       mamoru: {
@@ -109,7 +131,7 @@
         fov: '35deg',
         scale: '1 1 1',
         rotation: '0 45 0',
-        position: '0 0 0',  // ここでY座標を下げる
+        position: '0 0 0',
         animation: '*'
       },
       touch: {
@@ -118,47 +140,41 @@
         fov: '30deg',
         scale: '1 1 1',
         rotation: '0 90 0',
-        position: '0 0 0',  // ここでY座標を下げる
+        position: '0 0 0',
         animation: '*'
       }
     };
 
-
+    /* モデルを変更する関数 */
     function changeModel(glbFile, usdzFile, config) {
       const viewer = document.getElementById('arViewer');
 
+      /* ロード時にモデルの設定を適用 */
       const onLoadTransform = function() {
         if (config.scale) {
           const scaleValues = config.scale.split(' ').map(parseFloat);
-          if (viewer.model && viewer.model.scale) {
-            viewer.model.scale.set(scaleValues[0], scaleValues[1], scaleValues[2]);
-          }
+          viewer.model?.scale?.set(...scaleValues);
         }
         if (config.rotation) {
-          const rotationValues = config.rotation.split(' ').map(parseFloat);
-          const radianValues = rotationValues.map(deg => deg * Math.PI / 180);
-          if (viewer.model && viewer.model.rotation) {
-            viewer.model.rotation.set(radianValues[0], radianValues[1], radianValues[2]);
-          }
+          const rotationValues = config.rotation.split(' ').map(deg => deg * Math.PI / 180);
+          viewer.model?.rotation?.set(...rotationValues);
         }
-
-        // アニメーションを強制的に再生
         if (config.animation) {
           viewer.setAttribute('animation-name', config.animation);
         }
-        
-        viewer.play();  // 明示的にアニメーション再開
+        viewer.play();
         viewer.removeEventListener('load', onLoadTransform);
       };
 
       viewer.addEventListener('load', onLoadTransform);
 
+      /* モデルのファイルを変更 */
       viewer.setAttribute('src', glbFile);
       viewer.setAttribute('ios-src', usdzFile);
       viewer.setAttribute('camera-orbit', config.orbit);
       viewer.setAttribute('camera-target', config.target);
       viewer.setAttribute('field-of-view', config.fov);
-      viewer.setAttribute('animation-name', config.animation); // アニメーション適用
+      viewer.setAttribute('animation-name', config.animation);
     }
   </script>
 </body>
